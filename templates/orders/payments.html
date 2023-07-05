@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+ {% load static %}
+
+{% block content %}
+   <!-- Include the PayPal JavaScript SDK -->
+
+<style>
+    .pro-qty {
+      outline: 1px solid #333;
+    }
+    
+    .qty-btn {
+        border: none;
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
+    
+    .qty-input {
+        width: 4rem;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 0 0.5rem;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    
+    .qty-input:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+    
+    .qty-btn:active {
+        transform: translateY(2px);
+    }
+
+
+    @media (max-width: 768px) {
+        .cart-table {
+            overflow-x: auto;
+        }
+    
+        .cart-table table {
+            width: 100%;
+        }
+    
+        .cart-table th,
+        .cart-table td {
+            white-space: nowrap;
+        }
+    
+        .cart-table th.product-h,
+        .cart-table td.product-col {
+            width: auto;
+            max-width: 200px;
+        }
+    
+        .cart-table td.product-col {
+            display: flex;
+            align-items: center;
+        }
+    
+        .cart-table td.product-col img {
+            width: 50px;
+            margin-right: 10
+        }
+    }
+    
+    
+</style>
+
+    <!-- Cart Page Section Begin -->
+    
+    <br><br>
+    <form action="{% url 'order_complete' %}">
+     {% csrf_token %}
+    <div class="row">
+        <aside class="col-lg-7  p-5">
+            <div class="card ">
+                <div class="card-header">
+                  Billing Address
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title mb-0">{{order.full_name}}</h5>
+                    <p class="card-text mb-0">{{order.full_address}}</p>
+                    <p class="card-text mb-0">{{order.city}}, {{order.state}}</p>
+                    <p class="card-text mb-0">{{order.country}}</p>
+                    <p class="card-text mb-0">{{order.email}}</p>
+                    <p class="card-text mb-0">{{order.phone}}</p>
+                     {% if order.order_note  %}
+                        <b>Order Note:</b>{{order.order_note}}
+                     {% endif %}
+            </div>
+            <div class="card ">
+                <!-- <div class="form-check checkout__input__checkbox">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      Cash on Delivery
+                    </label>
+                </div>
+                <div class="form-check checkout__input__checkbox">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      PayPal
+                    </label>
+                </div> -->
+                <!-- <div class="card-body">
+                    <p class="card-text"></p>
+                </div> -->
+                <div class="card ">
+                    <div class="card-header">
+                        Review Product
+                    </div>
+                     <div class="col-lg-3">
+                        <div class="order-table">
+                           {% for cart_item in cart_items  %}
+                            <!-- <div class="cart-item">
+                                <img src="{{ cart_item.product.images.url }}" alt="product_image">
+                            </div> -->
+                            <div class="cart-item">
+                                <span>Product</span>
+                                <a href="{{ cart_item.product.get_url }}"><p class="product-name">{{ cart_item.product.product_name }}</p></a>
+                            </div>
+                            <div class="cart-item">
+                                <span>Price</span>
+                                <p>$ {{ cart_item.sub_total }}</p>
+                            </div>
+                            <div class="cart-item">
+                                <small>$ {{ cart_item.product.price }} each</small>
+                            </div>
+                            <div class="cart-item">
+                                <span>Quantity</span>
+                                <p>{{ cart_item.quantity }}</p>
+                            </div>
+                            {% endfor %}
+                            <div class="cart-item">
+                                <span>Shipping</span>
+                                <p>₹ {{ shipping_charge }}</p>
+                            </div>
+
+                            <div class="cart-total">
+                                <span>Total</span>
+                                <p>$ {{ grand_total }}</p>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div> <!-- card.// -->
+        </aside> <!-- col.// -->
+        <aside class="col-lg-4 py-5">
+            <div class="card">
+                <div class="card-body ">
+                    {% for cart_item in cart_items  %}
+                    <dl class="dlist-align">
+                      <dt>Total price:$ {{ cart_item.sub_total }}</dt>
+                      <dd class="text-right"></dd>
+                    </dl>
+                    <dl class="dlist-align">
+                      <dt>Shipping charge:$ {{ shipping_charge }}</dt>
+                      <dd class="text-right"> </dd>
+                    </dl>
+                    <dl class="dlist-align">
+                      <dt>Total:$ {{ grand_total }}</dt>
+                      <dd class="text-right text-dark b"><strong></strong></dd>
+                    </dl>
+                    {% endfor %}
+                    <dl class="dlist-align">
+                      <a href="{% url 'cash_on_delivery' %}"><button type="button" class="btn btn-success btn-lg btn-block rounded-pill"><b>COD</b> | Place Order</button></a>
+                    </dl>
+                    <dl class="dlist-align">
+                        <div id="paypal-button-container"></div>
+                    </dl>
+                    <hr>
+                    
+                </div> <!-- card-body.// -->
+            </div> <!-- card.// -->
+        </aside> <!-- col.// -->
+    </div> <!-- row.// -->
+    </form>
+    <!-- Cart Page Section End -->
+
+    <script>
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+            
+            var amount = "{{ grand_total }}"
+            var url = "{% url 'payments' %}"
+            var csrftoken = getCookie('csrftoken');
+            var orderID = "{{ order.order_number }}"
+            var payment_method = 'Paypal'
+            var redirect_url = "{% url 'order_complete' %}"
+             // Render the PayPal button into #paypal-button-container
+            paypal.Buttons({
+                style: {
+                    color:  'blue',
+                    shape:  'pill',
+                    label:  'pay',
+                    height: 40
+                },
+                // Set up the transaction
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: amount,
+                            }
+                        }]
+                    });
+                    },
+                // Finalize the transaction
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(orderData) {
+                        var details = orderData.purchase_units[0].payments.captures[0]
+                        console.log(details);
+                        sendData()
+                        // Successful capture! For demo purposes:
+                        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                        let transaction = orderData.purchase_units[0].payments.captures[0];
+                        function sendData(){
+                            fetch(url,{
+                                method : "POST",
+                                headers:{
+                                    "Content-type":"application/json",
+                                    "X-CSRFToken":csrftoken,
+                                },
+                                body: JSON.stringify({
+                                    orderID: orderID,
+                                    transID: details.id,
+                                    payment_method: payment_method,
+                                    status: details.status,
+                                }),
+                            })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                window.location.href = redirect_url + '?order_number='+data.order_number+'&payment_id='+data.transID;
+                            });
+
+                        }
+                    });
+                    }
+            }).render('#paypal-button-container');
+           
+
+    </script>
+  
+
+{% endblock  %}

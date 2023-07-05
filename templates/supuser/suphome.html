@@ -1,0 +1,497 @@
+ {% extends "supuser/supbase.html" %}
+
+ {% load static %}
+
+ {% block content %}
+   
+ 
+    <div class="" id="home">
+        <nav class="navbar navbar-expand-xl">
+            <div class="container h-100">
+                    <h1 class="tm-site-title mb-0"> Admin Panel</h1>
+                <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars tm-nav-icon"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto h-100">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'supuser' %}">
+                                <i class="fa fa-folder-o" aria-hidden="true"></i>
+                                Dashboard
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'manage' %}">
+                             <i class="fa fa-user-plus" aria-hidden="true"></i>
+                              Users
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'productmanage' %}">
+                                <i class="fas fa-shopping-cart"></i>
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'categorymanage' %}">
+                              <i class="fa fa-asterisk" aria-hidden="true"></i>
+                              Category
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'Variationmanage' %}">
+                                <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                                Variation Manage
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'orderslist' %}">
+                                <i class="fa fa-tags" aria-hidden="true"></i>
+                                Order Manage
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'coupen_manage' %}">
+                                <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+                                Coupons
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link d-block" href="{% url 'signout' %}">
+                                 <b>Logout  <i class="fa fa-sign-out" aria-hidden="true"></i></b>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+
+        <div class="container mt-2">
+                <!-- statistics data -->
+            <div class="statistics mt-2 mb-2">
+                <div class="row">
+                <div class="col-xl-6 pr-xl-2">
+                    <div class="row">
+                    <div class="col-sm-6 pr-sm-2 statistics-grid">
+                        <div class="card card_border border-primary-top p-4">
+                        <i class="fa fa-users" aria-hidden="true"></i>
+                        <h3 class="text-primary number">{{users_count}}</h3>
+                        <p class="stat-text">Total Users</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 pl-sm-2 statistics-grid">
+                        <div class="card card_border border-primary-top p-4">
+                            <i class="fa fa-product-hunt" aria-hidden="true"></i>
+                        <h3 class="text-secondary number">{{product_count}}</h3>
+                        <p class="stat-text">Product Count</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 pl-xl-2">
+                    <div class="row">
+                    <div class="col-sm-6 pr-sm-2 statistics-grid">
+                        <div class="card card_border border-primary-top p-4">
+                            <i class="fa fa-usd" aria-hidden="true"></i>
+                        <h3 class="text-success number">{{sums}}</h3>
+                        <p class="stat-text">Weekly Revenue</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 pl-sm-2 statistics-grid">
+                        <div class="card card_border border-primary-top p-4">
+                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                        <h3 class="text-danger number">{{total_orders}}</h3>
+                        <p class="stat-text">Total Orders</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!-- //statistics data -->
+
+                <!-- charts -->
+            <div class="chart">
+                <div class="row">
+                <div class="col-lg-6 pr-lg-2 chart-grid">
+                    <div class="card text-center card_border">
+                    <div class="card-header chart-grid__header">Bar Chart</div>
+                    <div class="card-body">
+                        <!-- bar chart -->
+                        <div id="container">
+                        <canvas id="mybarchart"></canvas>
+                        </div>
+                        <!-- //bar chart -->
+                    </div>
+                    <div class="card-footer text-muted chart-grid__footer">
+                        Updated 2 hours ago
+                    </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 pl-lg-2 chart-grid">
+                    <div class="card text-center card_border">
+                    <div class="card-header chart-grid__header">Line Chart</div>
+                    <div class="card-body">
+                        <!-- line chart -->
+                        <div id="container">
+                        <canvas id="mylinechart"></canvas>
+                        </div>
+                        <!-- //line chart -->
+                    </div>
+                    <div class="card-footer text-muted chart-grid__footer">
+                        Updated just now
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+ 
+                <!-- <div class="col-12 tm-block-col">
+                    <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-md-flex d-grid align-items-center justify-content-between mb-4">
+                                {% comment %} <form class="form-inline d-flex my-1 align-items-center justify-content-between" style="width:70%;"> {% endcomment %}
+                                <div>
+                                    <h6 class="mb-0">From</h6>
+                                    <input class="form-control" type="date" name="from" id="from">
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">To</h6>
+                                    <input class="form-control" type="date" name="to" id="to">
+                                </div>
+                                <button class="btn btn-primary" onclick="applyfilter()" style="border-radius: 10rem;">Go</button>
+                                {% comment %} </form> {% endcomment %}
+                            <div>
+                                <select class="float-right form-control" id="export-options" onchange="exportData()" style="border-radius: 10rem;">
+                                    <option value=" ">Choose option</option>
+                                    <option value="excel">Export to Excel</option>
+                                    <option value="pdf">Download PDF</option>
+                                </select>
+                            </div>
+                            </div>
+                        </div>
+                        <h2 class="tm-block-title">Recent Order List</h2>
+                        <a href="{% url 'orderslist' %}" class="btn btn-primary" style="border-radius: 10rem;">Show All</a>
+                        {% if orders %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order Number</th>
+                                    <th scope="col">Ordered User</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Created At</th>
+                                    <th scope="col">Status </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                 {% for order in orders %}
+                                    <tr>
+                                      <th scope="row">{{order.order_number}}</a></th>
+                                      <td>{{order.first_name}}</td>
+                                      <td>{{order.order_total}}</td>
+                                      <td>{{order.created_at}}</td>
+                                      <td>{{order.status}}</td>
+                                    </tr>
+                                  {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <h3 class="text-center alert alert-warning ">No Records Found</h3>
+                        {% endif %}
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+         <!-- Recent Sales Start -->
+  <div class="container pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+       <div class="d-flex align-items-center justify-content-between mb-0">
+           <h5 class="mb-0">Recent Orders</h5>
+           <a href="{% url 'orderslist' %}">Show All</a>
+       </div>
+       <div class="bg-light text-center rounded p-4">
+           <div class="d-md-flex d-grid align-items-center justify-content-between mb-4">
+               {% comment %} <form class="form-inline d-flex my-1 align-items-center justify-content-between" style="width:70%;"> {% endcomment %}
+               <div>
+                   <h6 class="mb-0">From</h6>
+                   <input class="form-control" type="date" name="from" id="from">
+               </div>
+               <div>
+                   <h6 class="mb-0">To</h6>
+                   <input class="form-control" type="date" name="to" id="to">
+               </div>
+               <button class="btn btn-primary" onclick="applyfilter()" style="border-radius: 10rem;">Go</button>
+               {% comment %} </form> {% endcomment %}
+           <div>
+               <select class="float-right form-control" id="export-options" onchange="exportData()" style="padding: 16px 18px;border-radius:10rem">
+                   <option value=" ">Choose option</option>
+                   <option value="excel">Export to Excel</option>
+                   <option value="pdf">Download PDF</option>
+               </select>
+           </div>
+           </div>
+       </div>
+       <div class="table-responsive">
+           {% if orders %}
+           <table id="orders-table" class="table table-hover">
+               <thead>
+               <tr>
+                   <th scope="col">Order Number</th>
+                   <th scope="col">Ordered User</th>
+                   <th scope="col">Price</th>
+                   <th scope="col">Created At</th>
+                   <th scope="col">Status </th>
+                   
+               </tr>
+               </thead>
+               <tbody id="tbody">
+               {% for order in orders %}
+               <tr>
+                   <th scope="row">{{order.order_number}}</a></th>
+                   <td>{{order.first_name}}</td>
+                   <td>{{order.order_total}}</td>
+                   <td>{{order.created_at}}</td>
+                   <td>{{order.status}}</td>
+               </tr>
+               {% endfor %}
+               </tbody>
+           </table>
+           {% else %}
+               <h3 class="text-center alert alert-warning ">No Records Found</h3>
+           {% endif %}
+       </div>
+   </div>
+</div>
+<!-- Recent Sales End -->
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2018</b> All rights reserved. 
+                    
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{% static 'super/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- https://jquery.com/download/ -->
+    <script src="{% static 'super/js/moment.min.js' %}"></script>
+    <!-- https://momentjs.com/ -->
+    <script src="{% static 'super/js/Chart.min.js' %}"></script>
+    <!-- http://www.chartjs.org/docs/latest/ -->
+    <script src="{% static 'super/js/bootstrap.min.js' %}"></script>
+    <!-- https://getbootstrap.com/ -->
+    <script src="{% static 'super/js/tooplate-scripts.js' %}"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> 
+    <script>
+        Chart.defaults.global.defaultFontColor = 'white';
+        let ctxLine,
+            ctxBar,
+            ctxPie,
+            optionsLine,
+            optionsBar,
+            optionsPie,
+            configLine,
+            configBar,
+            configPie,
+            lineChart;
+        barChart, pieChart;
+        // DOM is ready
+        $(function () {
+            drawLineChart(); // Line Chart
+            drawBarChart(); // Bar Chart
+            drawPieChart(); // Pie Chart
+
+            $(window).resize(function () {
+                updateLineChart();
+                updateBarChart();                
+            });
+        })
+    </script>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function applyfilter(){
+            var url = "{% url 'add_order_filter' %}"
+            var csrftoken = getCookie('csrftoken');
+            var from = document.getElementById("from").value
+            var to = document.getElementById("to").value
+            fetch(url,{
+                method : "POST",
+                headers:{
+                    "Content-type":"application/json",
+                    "X-CSRFToken":csrftoken,
+                },
+                body:JSON.stringify({
+                    from:from,
+                    to:to
+                }),
+            })
+            .then(async function (response){
+                const data =await response.json()
+                if(data){
+                    data.order = JSON.parse(data.order);
+                    console.log(data)
+      
+                    // Clear the existing table contents
+                    $('#orders-table tbody').empty();
+                    // Loop through the new data and generate HTML for each row
+                    $.each(data.order, function(index, order) {
+                        let tr = document.createElement('tr')
+                        let tbody = document.getElementById('tbody')
+                        let trdata = `<td>${order.fields.order_number}</td>
+                        <td>${order.fields.first_name} ${order.fields.last_name}</td>
+                        <td>${order.fields.order_total}</td>
+                        <td>${new Date(order.fields.created_at).toLocaleDateString()}</td>
+                        <td>${order.fields.status}</td>
+                        `
+                        tr.innerHTML = trdata
+                        tbody.appendChild(tr)
+                        var row = $('<tr>');
+                    });
+                }
+            });
+        }
+    </script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    function exportData() {
+var selectedOption = document.getElementById("export-options").value;
+
+if (selectedOption == "excel") {
+    // call function to export to excel
+    exportTableToExcel('orders-table', 'Sales Report');
+} else if (selectedOption == "pdf") {
+    // call function to download pdf
+    downloadPDF();
+
+}
+}
+function exportTableToExcel(table_id, filename = 'Sales-report'){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(table_id);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+
+    // Create download link element
+    downloadLink = document.createElement("a");
+
+    document.body.appendChild(downloadLink);
+
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+        // Setting the file name
+        downloadLink.download = filename;
+
+        //triggering the function
+        downloadLink.click();
+        location.reload()
+    }
+}
+
+function downloadPDF() {
+    const element = document.getElementById('orders-table');
+
+// configure the html2pdf options
+    const options = {
+    filename: 'sales-report.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+// convert the element to PDF
+html2pdf().from(element).set(options).save();
+}
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+        // Worldwide Sales Chart
+    var ctx1 = $("#mybarchart").get(0).getContext("2d");
+    var myChart1 = new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: [{% for product in products %} '{{product.product_name}}', {% endfor %}],
+            datasets: [{
+                    label: "Stock",
+                    data: [{% for product in products %} {{product.stock}}, {% endfor %}],
+                    backgroundColor: "rgba(0, 156, 255, .7)"
+                }, 
+            ]
+            },
+        options: {
+            responsive: true
+        }
+    });
+
+
+    // Salse & Revenue Chart
+    var ctx2 = $("#mylinechart").get(0).getContext("2d");
+    var myChart2 = new Chart(ctx2, {
+        type: "line",
+        data: {
+            labels: [{% for date in dates %}'{{date|date:"d"}}',{% endfor %}],
+            datasets: [{
+                    label: "Sales",
+                    data: [{% for sale in sales %}{{sale}},{% endfor %}],
+                    backgroundColor: "rgba(0, 156, 255, .5)",
+                    fill: true
+                },
+
+            ]
+            },
+        options: {
+            responsive: true
+        }
+    });
+    
+</script>
+</body>
+
+</html>
+{% endblock  %}

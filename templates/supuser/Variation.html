@@ -1,0 +1,181 @@
+{% extends "supuser/supbase.html" %}
+ {% load static %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-xl">
+    <div class="container h-100">
+            <h1 class="tm-site-title mb-0"> Admin Panel</h1>
+        <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars tm-nav-icon"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto h-100">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'supuser' %}">
+                        <i class="fa fa-folder-o" aria-hidden="true"></i>
+                        Dashboard
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <!-- <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-file-alt"></i>
+                        <span>
+                            Reports <i class="fas fa-angle-down"></i>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Daily Report</a>
+                        <a class="dropdown-item" href="#">Weekly Report</a>
+                        <a class="dropdown-item" href="#">Yearly Report</a>
+                    </div>
+                </li> -->
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'manage' %}">
+                     <i class="fa fa-user-plus" aria-hidden="true"></i>
+                      Users
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'productmanage' %}">
+                        <i class="fas fa-shopping-cart"></i>
+                        Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'categorymanage' %}">
+                      <i class="fa fa-asterisk" aria-hidden="true"></i>
+                      Category
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'Variationmanage' %}">
+                        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                        Variation Manage
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'orderslist' %}">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        Order Manage
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'coupen_manage' %}">
+                        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+                        Coupons
+                    </a>
+                </li>
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-cog"></i>
+                        <span>
+                            Settings <i class="fas fa-angle-down"></i>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="#">Billing</a>
+                        <a class="dropdown-item" href="#">Customize</a>
+                    </div>
+                </li> -->
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link d-block" href="{% url 'signout' %}">
+                         <b>Logout  <i class="fa fa-sign-out" aria-hidden="true"></i></b>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</nav>
+
+
+<!-- Add this below the table -->
+<div class="pagination mt-2" style="margin-left: 85rem;">
+    <span class="step-links">
+      {% if variations.has_previous %}
+        <a class="text-white" href="?page={{ variations.previous_page_number }}">previous</a>
+      {% endif %}
+  
+      <span class="current-page" style="color: #f5a623;;">{{ variations.number }}</span>
+  
+      {% if variations.has_next %}
+        <a class="text-white" href="?page={{ variations.next_page_number }}">next</a>
+      {% endif %}
+    </span>
+</div>
+  
+
+  <div class="container">
+    <div class="d-flex justify-content-center mt-4">
+        <h2 class="text-white ms-3">Variation Details</h2>
+    </div>
+    <a href = "{% url 'add_variation' %}" class ="btn btn-primary btn-sm" style="border-radius: 10rem;margin-left:60rem;">Add Product</a>
+    {% if variations %}
+    <table class="table table-hover">
+      <thead>
+        <tr style="background-color: #f5a623;color:black;">
+          <th>Product</th>
+          <th>Category</th>
+          <th>Value</th>
+          <th>Active</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for variation in variations %}
+        <tr>
+          <td>{{ variation.product.product_name }}</td>
+          <td>{{ variation.variation_category }}</td>
+          <td>{{ variation.variation_value }}</td>
+          <td>{{ variation.is_active }}</td>
+          <td>{{ variation.created_date }}</td>
+          <td>
+              <a href = "{% url 'edit_variation'  variation.id %}" class ="btn btn-warning btn-sm my-2 " style="border-radius: 10rem;">Edit</a>
+              <form action="{% url 'delete_variation' variation.id %}" method="post" class="d-inline">{% csrf_token %}
+                  <input type="submit" class="btn btn-danger btn-sm" style="border-radius: 10rem;" value="Delete" onclick="return confirmDelete(event)">
+              </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+     </table>
+     {% else %}
+     <div>
+      <a href = "{% url 'add_variation' %}" class ="btn btn-primary btn-sm">Add Product</a></th>
+    </div>
+     <h3 class="text-center alert alert-warning ">No Records Found</h3>
+    {% endif %}
+  </div>
+
+  <script>
+    function confirmDelete(event) {
+        event.preventDefault(); // Prevent the form from immediately submitting
+        var form = event.target.closest('form'); // Find the closest form element
+    
+        swal({
+            title: "Do you really want to delete?",
+            icon: "warning",
+            buttons: {
+                cancel: "No",
+                confirm: "Yes"
+            },
+        }).then(function (confirmed) {
+            if (confirmed) {
+                form.submit(); // Submit the form
+            }
+        });
+    }
+</script>
+  
+{% endblock  %}

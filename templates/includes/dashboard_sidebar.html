@@ -1,0 +1,28 @@
+<style>
+    .list-group-item {
+      display: inline-block;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #333;
+      transition: background-color 0.3s;
+    }
+    
+    .list-group-item:hover {
+      background-color: #ccc;
+    }
+  </style>
+<aside class="md-3">
+    <ul class="list-group">
+        <a class="list-group-item" href="{% url 'dashboard' %}">Dashboard <i class="fa-solid fa-folder"></i></a>
+        <a class="list-group-item" href="{% url 'my_orders' %}">My orders  <i class="fa-solid fa-list"></i></a>
+        <a class="list-group-item" href="{% url 'edit_profile' %}">My profile <i class="fa-sharp fa-solid fa-user"></i></a>
+        <a class="list-group-item" href="{% url 'change_password' %}">Change password <i class="fa-solid fa-lock"></i></a>
+        <a class="list-group-item" href="{% url 'my_addresses' %}">Address Book <i class="fa-solid fa-address-book"></i></a>
+
+    </ul>
+     <br>
+     <!-- <a class="btn btn-light btn-block" href="{% url 'signout' %}"><span class="text">Log Out</span></a> -->
+</aside>
