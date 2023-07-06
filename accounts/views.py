@@ -338,7 +338,8 @@ def order_details(request, order_id):
 
 def cancel_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-
+    wallet =None
+    
     if order.status == 'Cancelled':
         messages.warning(request, 'This order has already been cancelled.')
     else:
@@ -356,7 +357,8 @@ def cancel_order(request, order_id):
         wallet.balance += order.order_total
         wallet.save()
         messages.success(request, 'Order successfully cancelled.')
-    return redirect('my_orders')
+    context={'wallet':wallet}
+    return render(request,'accounts/dashboard.html',context)
 
 
 #################################################################################################################

@@ -9,5 +9,6 @@ urlpatterns = [
     # path('confirm_order',views.confirm_order,name="confirm_order"),
     
     path('return/<int:order_id>/<int:product_id>',views.initiate_return,name='return'),
+    path('payment_wallet',views.payment_wallet,name='payment_wallet'),
     
 ]

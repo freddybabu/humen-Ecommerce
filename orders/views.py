@@ -11,6 +11,7 @@ import random
 from store.models import Product
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from .models import Wallet
 # Create your views here.
 
 
@@ -283,4 +284,87 @@ def initiate_return(request, order_id, product_id):
         print(orderitem.product)
     return render(request,'orders/return_product.html',{"order":order,"form":form,"order_item":orderitem})
     
+  
+def payment_wallet(request):
+    wallet =  Wallet.objects.get(user=request.user)
+    
+    order = Order.objects.latest("created_at")
+    total_amount = order.order_total
+    
+    if wallet.balance >= total_amount:
+        wallet.balance -= total_amount
+        wallet.save()
+        
+        yr=int(datetime.date.today().strftime("%Y"))
+        dt=int(datetime.date.today().strftime("%d"))
+        mt=int(datetime.date.today().strftime("%m"))
+        d=datetime.date(yr,dt,mt)
+        current_date=d.strftime("%Y%m%d")
+        
+        random_number = random.randint(1,1000)
+        order_num  = current_date+str(random_number)
+        print(order_num)
+        
+        payment=Payment(
+            user = request.user,
+            payment_method="wallet",
+            amount_paid = total_amount,
+            status="New",
+        )
+        payment.save()
+        
+        order.payment=payment
+        order.is_ordered=True
+        order.save()
+        
+        #move the cart items to order product table
+        orderproduct=OrderProduct.objects.filter(order_id=order.id)
+        shipping_charge = 40
+        sub_total =0
+        grand_total =0
+        for item in orderproduct:
+            sub_total=item.product_price*item.quantity
             
+        grand_total=sub_total+shipping_charge
+        
+        
+        cart_items = CartItem.objects.filter(user=request.user)
+        for item in cart_items:
+            orderproduct = OrderProduct()
+            orderproduct.order_id = order.id
+            orderproduct.payment = payment
+            orderproduct.user_id = order.user.id
+            orderproduct.product_id = item.product_id  # Corrected attribute name
+            orderproduct.quantity = item.quantity
+            orderproduct.product_price = item.product.price
+            orderproduct.ordered = True
+            orderproduct.save()
+            
+            cart_item = CartItem.objects.get(id=item.id)
+            product_variation = cart_item.variations.all()
+            orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+            orderproduct.variations.set(product_variation)
+            orderproduct.save()
+
+            # Reduce the quantity of sold products
+            product = Product.objects.get(id=item.product_id)
+            product.stock -= item.quantity
+            product.save()
+
+            
+        #item delete
+        CartItem.objects.filter(user=request.user).delete()
+        context={
+            'order':order,
+            'orderproduct':orderproduct,
+            'payment':payment,
+            'sub_total':sub_total,
+            'shipping_charge':shipping_charge,
+            'grand_total':grand_total,
+        }
+        return render(request,'orders/walletpay.html',context)
+            
+                        
+            
+            
+                     
