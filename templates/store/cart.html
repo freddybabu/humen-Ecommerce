@@ -69,6 +69,7 @@
         }
     }
     
+    
 </style>
     <!-- Header Info Begin -->
     <div class="header-info" style="margin-top: 10px;">
@@ -209,6 +210,17 @@
                         <button  onclick="applycoupon()" style='background-color: black; color: #fff; padding: 10px 20px; margin-left: 5px;'>Apply</button>
                         <h6 id="coupon_id" style="padding-top:1rem;" ></h6>
                 </div>
+                <div class="text-center" style="width: 20rem;">
+                    <h4>Available Coupons</h4>
+                    <ul class="list-group" id="coupon-list">
+                        {% for coupon in coupons %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center coupon-item">
+                            <span>{{ coupon.code }}</span>
+                            <span class="badge badge-primary badge-pill">{{ coupon.discount }}% off</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
                 
 
             </div>
@@ -225,7 +237,6 @@
                                         <tr>
                                             <th>Total</th>
                                             <th>Shipping </th>
-                                            <th>Discount Amount</th>
                                             <th class="total-cart">Grand Cart</th>
                                         </tr>
                                     </thead>
@@ -233,9 +244,6 @@
                                         <tr>
                                             <td class="total">$. {{total}}</td>
                                             <td class="sub-total">$. {{shipping_charge}}</td>
-                                            {% if coupon in coupons  %}
-                                             <td class="shipping">${{coupon.discount_amount}}</td>
-                                            {% endif %}
                                             <td class="total-cart-p" id="grand_total">$ {{grand_total}}</td>
                                         </tr>
                                     </tbody>
@@ -375,6 +383,21 @@
       });
 </script>
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Add animation on hover
+        $('.coupon-item').hover(
+            function() {
+                $(this).addClass('animated pulse');
+            },
+            function() {
+                $(this).removeClass('animated pulse');
+            }
+        );
+    });
+</script>
 
 
     
