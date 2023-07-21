@@ -56,8 +56,8 @@ Admin-side Features:
 Hosting:
 The Django-based e-commerce website is hosted on an AWS instance using Nginx with Gunicorn to ensure optimal performance and reliability.
 
-For a live video of the MARVELOUSWEAR web application in action, visit my LinkedIn profile: https://www.linkedin.com/in/aswin-er-bb54a1240/
+For a live video of the huMEN web application in action, visit my LinkedIn profile: https://www.linkedin.com/in/freddy-t-b-339318126/
 
-The live version of the project can be accessed at https://marvelouswear.store.
+The live version of the project can be accessed at https://thehumen.shop/
 
 Note: The above description is a conceptual conversion of the original project details provided for a Python Django-based implementation of the e-commerce website. The actual implementation may involve specific coding patterns, package choices, and design considerations in the Django framework.
